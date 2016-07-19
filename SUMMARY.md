@@ -1,7 +1,7 @@
 # Summary
 
 * [AWS IoTとは？](awsiot001.md)
-* [AWS IoTにRaspberryPIを登録する](awsiot002.md)
+* [AWS IoTにRaspberryPIをデバイスとして登録する](awsiot002.md)
   * [NodeJS](awsiot002_node.md)
   * [Python](awsiot002_py.md)
 * [温度センサーの値を同期](awsiot003.md)
