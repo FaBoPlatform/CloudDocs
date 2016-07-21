@@ -52,7 +52,7 @@ AWS IoTの画面から先ほど作成したThingを選択することで右側�
 
 ![](img/setup/python/006.png)
 
-今回は「/test/temp」というTopicへデータを送信するため、Topic filterにはこのように設定します。
+今回は「temp」というTopicへデータを送信するため、Topic filterにはこのように設定します。
 
 <br>
 
@@ -62,9 +62,10 @@ AWS IoTの画面から先ほど作成したThingを選択することで右側�
 |:--|:--|:--|
 |Name|ルール名|raspi_rule|
 |Description|ルールに対するコメント|raspi_test|
+|Rule query statement|取得条件|変更不可(以下の項目で設定した内容が反映)|
 |SQL version|SQLのバージョン|2016-03-23-beta(変更なし)|
 |Attribute|取得する項目|*|
-|Topic filter|取得するTopic|/test/temp|
+|Topic filter|取得するTopic|temp|
 |Condition|取得する条件|未設定|
 
 <br>
@@ -124,7 +125,7 @@ AWS IoTの入力していた画面に戻り、テーブル名の右側にある�
 
 ここでは各項目に設定する内容を記述します。
 
-Hash key valueに設定している内容は、thingから送られてきたdeviceというデータを、テーブルのdeviceの項目に設定するという意味になります。
+Hash key valueに設定している内容は、thingから送られてきた「device」という変数のデータを、テーブルのキー項目である「device」に設定するという意味になります。
 
 Range key valueも同様の内容になります。
 
@@ -136,6 +137,7 @@ Range key valueも同様の内容になります。
 |:--|:--|:--|
 |Table name|データを設定するテーブル名|temperature|
 |Hash key value|Key項目に設定する内容|${device}|
+|Payload field|データを設定する項目の項目名 (未設定の場合はPayload)|未設定|
 |Range key value|Range Keyに設定する内容|${timestamp}|
 
 <br>
@@ -146,21 +148,28 @@ Role nameの右にある「Create a new role」を選択します。
 
 ![](img/setup/python/014.png)
 
+
 IAMロール、ポリシー名を選択します。
 
-今回は変更無しで許可ボタンをクリックします。
+ポリシードキュメントを表示をクリックして内容を確認します。
 
 ![](img/setup/python/015.png)
 
+actionの内容や、今回設定したテーブル名が設定されています。
+
+今回は変更せずに「許可」ボタンをクリックしてロールを作成します。
+![](img/setup/python/016.png)
+
+
 作成したロール名を選択し、Add actionボタンをクリックします。
 
-![](img/setup/python/016.png)
+![](img/setup/python/017.png)
 
 項目の説明
 
 |項目|説明|設定値|
 |:--|:--|:--|
-|Role name|設定するロール|aws_iot_s3|
+|Role name|設定するロール|aws_iot_dynamoDB|
 
 <br>
 
@@ -168,7 +177,7 @@ DynamoDBが追加されました。
 
 ここでCreateをクリックするとルールが作成されます。
 
-![](img/setup/python/017.png)
+![](img/setup/python/018.png)
 
 
 ### デバイス接続認証設定
@@ -197,7 +206,9 @@ AWS IoTの画面からThingを選択し、表示された詳細から「Connect 
 |XXXXXXXXXX-certificate.pem.crt|証明書|
 
 
-※Publick KeyとPrivate Keyはここでしかダウンロードすることができないので、忘れずにダウンロードしてください。
+※certificateは後からダウンロードできますが、Publick KeyとPrivate Keyはここでしかダウンロードすることができません。
+
+忘れずにダウンロードしてください。
 
 ダウンロードが完了したら「Confirm & start connecting」をクリックします。
 
