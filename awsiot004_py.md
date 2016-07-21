@@ -65,10 +65,10 @@ aws/
 ## サンプルコード準備
 awsフォルダ内にサンプルコード「aws_temp.py」を作成します。
 
-16行目〜21行目にあるhost、privateKeyPath、certificatePathの項目には「XXXXXX」で記載している箇所があります。
+16行目〜21行目にある①host、②certificatePath、③privateKeyPathの項目には「XXXXXX」で記載している箇所があります。
 
 
-ここは接続設定で下の画面で退避しておいたテキストに合わせて変更して下さい。
+ここは接続設定時の下の画面の時に退避しておいたテキストに合わせて変更して下さい。
 
 ![](img/publish/python/001.png)
 
@@ -76,14 +76,14 @@ awsフォルダ内にサンプルコード「aws_temp.py」を作成します。
 
 ### aws_temp.py
 
-```
+``` python
 #!/usr/bin/env python
 # coding: utf-8
 
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import logging
 import time
-from time import gmtime, strftime
+from time import localtime, strftime
 import json
 
 # I2C 温度センサ用ライブラリ
@@ -92,11 +92,11 @@ import FaBoTemperature_ADT7410
 # 温度取得用のオブジェクト
 adt7410 = FaBoTemperature_ADT7410.ADT7410()
 
-# ①Host設定 AWS IoTのThingのホスト名
+# ① Host設定 AWS IoTのThingのホスト名
 host            = "XXXXXXXXXXXXXXXXXX-1.amazonaws.com"
-# ②certificateのパス設定
+# ② certificateのパス設定
 certificatePath = "./key/XXXXXXXXXX-certificate.pem.crt"
-# ③private Keyのパス設定
+# ③ private Keyのパス設定
 privateKeyPath  = "./key/XXXXXXXXXX-private.pem.key"
 # rootCAのパス設定 取得した証明書のパス
 rootCAPath      = "./key/rootCA.pem"
