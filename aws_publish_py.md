@@ -72,7 +72,7 @@ awsフォルダ内にサンプルコード「aws_temp.py」を作成します。
 
 ここは接続設定時の下の画面の時に退避しておいたテキストに合わせて変更して下さい。
 
-![](img/publish/python/001.png)
+![](img/publish/python/publish001.png)
 
 <br>
 
