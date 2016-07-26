@@ -2,9 +2,11 @@
 
 * [AWS IoTとは？](awsiot001.md)
 * [AWS IoTにRaspberryPIをデバイスとして登録する](awsiot002.md)
-  * [NodeJS](awsiot002_node.md)
-  * [Python](awsiot002_py.md)
+  * [NodeJS](aws_setup_node.md)
+  * [Python](aws_setup_py.md)
 * [温度センサーの値を同期](awsiot003.md)
-  * [NodeJS](awsiot003_node.md)
-  * [Python](awsiot004_py.md)
- 
+  * [NodeJS](aws_publish_node.md)
+  * [Python](aws_publish_py.md) 
+* [AWSによるLED制御](awsiot004.md)
+  * [NodeJS](aws_subscribe_node.md)
+  * [Python](aws_subscribe_py.md) 

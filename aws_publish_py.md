@@ -1,7 +1,9 @@
 
 ## 温度センサーの値を同期(Python）
 
-ここではI2Cの温度センサーから温度を取得し、その値をAWS IoT側に登録するということを行っていきます。
+I2Cの温度センサーから温度を取得し、その値をAWS IoT側に送信します。。
+
+今回送信したデータはMQTT Clientにて確認を行っていきます。
 
 ### Out/In Shieldと温度センサーの接続
 RaspberryPIにOut/In Shieldを取り付けます。
@@ -29,8 +31,8 @@ sudo pip install FaBoTemperature_ADT7410
 ```
 
 
-### Key、証明書ファイルの準備
-サンプルコード実行にあたり、Key情報や証明書のファイルなど、計３つ必要になります。
+### 証明書ファイルの準備
+サンプルコード実行にあたり、証明書のファイルが３つ必要になります。
 
 RaspberryPIにて、今回ファイルを格納するフォルダ「aws」を作成し、その中に「key」というフォルダを作成します。
 
@@ -40,9 +42,9 @@ RaspberryPIにて、今回ファイルを格納するフォルダ「aws」を作
 * xxxxxxxxxx-private.pem.key
 
 
-次に、もうひとつの証明書ファイルを作成します。
+次に、ルート証明書ファイルを取得します。
 
-keyフォルダに移動し、下記コマンドによりもう一つ証明書ファイルを取得します。
+keyフォルダに移動し、下記コマンドによりファイルを作成します。
 
 ```
 curl https://www.symantec.com/content/en/us/enterprise/verisign/roots/VeriSign-Class%203-Public-Primary-Certification-Authority-G5.pem -o rootCA.pem
@@ -55,9 +57,9 @@ rootCA.pemという名前で保存されます。
 ```
 aws/
   └ key/
-      ├ xxxxxxxxxx-certificate.pem.crt (ダウンロードした証明書)
+      ├ xxxxxxxxxx-certificate.pem.crt (ダウンロードしたSSL証明書)
       ├ xxxxxxxxxx-private.pem.key     (プライベートキー)
-      └ rootCA.pem                     (コマンドにて取得した証明書)
+      └ rootCA.pem                     (コマンドにて取得したルート証明書)
 ```
 
 
@@ -76,14 +78,13 @@ awsフォルダ内にサンプルコード「aws_temp.py」を作成します。
 
 ### aws_temp.py
 
-``` python
+```python
 #!/usr/bin/env python
 # coding: utf-8
 
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import logging
 import time
-from time import localtime, strftime
 import json
 
 # I2C 温度センサ用ライブラリ
@@ -98,16 +99,8 @@ host            = "XXXXXXXXXXXXXXXXXX-1.amazonaws.com"
 certificatePath = "./key/XXXXXXXXXX-certificate.pem.crt"
 # ③ private Keyのパス設定
 privateKeyPath  = "./key/XXXXXXXXXX-private.pem.key"
-# rootCAのパス設定 取得した証明書のパス
+# rootCAのパス設定
 rootCAPath      = "./key/rootCA.pem"
-
-# Custom MQTT message callback
-def customCallback(client, userdata, message):
-        print("Received a new message: ")
-        print(message.payload)
-        print("from topic: ")
-        print(message.topic)
-        print("--------------\n\n")
 
 # Configure logging
 logger = None
@@ -141,22 +134,17 @@ time.sleep(2)
 while True:
     # 温度データ取得
     temp = "{0:.2f}".format(adt7410.read())
-    # タイムスタンプ(local time)の文字列作成 
-    timestamp = strftime('%Y-%m-%d %H:%M:%S', localtime())
     # 送信データ設定
     record = {
-        "device": "raspi",
-        "timestamp": timestamp,
         "temp": temp
     }
     # データ変換
     jstr = json.dumps(record)
-    # データ送信 tempというTopicに送信
-    myAWSIoTMQTTClient.publish("temp", str(jstr), 1)
+    # データ送信 MQTT Clientで設定したSubscribe topic名を指定
+    myAWSIoTMQTTClient.publish("sub_topic", str(jstr), 1)
     # 送信データのログ出力
     print jstr
 
-    # 今回はサンプルのため10秒毎に送信
     time.sleep(10)
 
 ```
@@ -169,10 +157,16 @@ while True:
 aws/
   ├ aws_temp.py (サンプルプログラム）
   └ key/
-      ├ xxxxxxxxxx-certificate.pem.crt (ダウンロードした証明書)
+      ├ xxxxxxxxxx-certificate.pem.crt (ダウンロードしたSSL証明書)
       ├ xxxxxxxxxx-private.pem.key     (プライベートキー)
-      └ rootCA.pem                     (コマンドにて取得した証明書)
+      └ rootCA.pem                     (コマンドにて取得したルート証明書)
 ```
+
+実行する前にMQTT　Client Actionの画面を開いておきます。
+もし閉じてしまった場合はもう一度同様の内容で作成して下さい。
+
+![](img/publish/python/publish002.png)
+
 
 awsフォルダに移動し、下記のコマンドによりサンプルコードを実行します。
 
@@ -183,7 +177,7 @@ python aws_temp.py
 実行後、いくつかログ表示されたあと、下記のようなログが表示されます。
 
 ```
-{"device": "raspi", "timestamp":"XXXX-XX-XX XX:XX:XX", "temp": "XX.XX"}
+{"temp": "XX.XX"}
 ```
 
 このログが２回ほど表示されたら、Controlキー＋Cで処理を終了します。
@@ -191,16 +185,6 @@ python aws_temp.py
 
 ### 結果確認
 
-AWSのホーム画面から「DynamoDB」を選択します。
+AWS IoTのMQTT Clientの画面から、今回送信した温度データを確認することができます。
 
-![](img/publish/python/101.png)
-
-DynamoDBの画面が表示されるので、テーブル>temperature>項目と選択していくと、今回作成したデータが表示されます。
-
-詳細を表示するには、対象データのdevice名の「raspi」をクリックします。
-
-![](img/publish/python/102.png)
-
-payloadの項目をクリックすることで、送信した温度データを確認することができます。
-
-![](img/publish/python/103.png)
+![](img/publish/python/publish003.png)
