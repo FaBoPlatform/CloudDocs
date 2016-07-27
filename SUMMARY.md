@@ -8,5 +8,5 @@
   * [NodeJS](aws_publish_node.md)
   * [Python](aws_publish_py.md) 
 * [AWSによるLED制御](awsiot004.md)
-  * [NodeJS](aws_subscribe_node.md)
-  * [Python](aws_subscribe_py.md) 
+  * [NodeJS](aws_shadow_node.md)
+  * [Python](aws_shadow_py.md) 

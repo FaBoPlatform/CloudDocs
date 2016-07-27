@@ -115,7 +115,7 @@ logger.addHandler(streamHandler)
 myAWSIoTMQTTClient = None
 # Thingに設定した名前
 myAWSIoTMQTTClient = AWSIoTMQTTClient("raspi")
-# Port
+# Endpoint
 myAWSIoTMQTTClient.configureEndpoint(host, 8883)
 # 証明書のパス
 myAWSIoTMQTTClient.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
