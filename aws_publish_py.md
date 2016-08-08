@@ -1,7 +1,7 @@
 
 ## 温度センサーの値を同期(Python）
 
-I2Cの温度センサーから温度を取得し、その値をAWS IoT側に送信します。。
+I2Cの温度センサーから温度を取得し、その値をAWS IoT側に送信します。
 
 今回送信したデータはMQTT Clientにて確認を行っていきます。
 
@@ -10,6 +10,12 @@ RaspberryPIにOut/In Shieldを取り付けます。
 
 Out/In ShieldのI2Cコネクタに#207 Temperature i2c Brickを接続します。
 
+**※I2Cセンサーを使用する場合、事前にいくつかの設定を行う必要があります。**
+
+**下記の「I2CとSPIの有効化の設定方法」を参考に設定を行って下さい。
+**
+
+https://fabo.gitbooks.io/module/content/502_shield_outin_raspberrypi.html
 
 ### AWS IoT Device SDK for Pythonのインストール
 
