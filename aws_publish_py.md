@@ -40,17 +40,20 @@ sudo pip install FaBoTemperature_ADT7410
 ### 証明書ファイルの準備
 サンプルコード実行にあたり、証明書のファイルが３つ必要になります。
 
-RaspberryPIにて、今回ファイルを格納するフォルダ「aws」を作成し、その中に「key」というフォルダを作成します。
+RaspberryPIにて、今回ファイルを格納するフォルダ「aws」を作成します。
 
-デバイス接続認証設定でダウンロードしたファイルのうち、以下の２ファイルをRaspberryPiのkeyフォルダに格納します。
+PC側でAWSIoTで作成した証明書ファイル等が入ったkeyフォルダをRaspberryPIに移動しま。。
 
-* xxxxxxxxxx-certificate.pem.crt
-* xxxxxxxxxx-private.pem.key
+####macの場合
+Keyフォルダが存在する場所まで移動し、以下のコマンドを実行
+```
+scp -rC key pi@xxx.xxx.xxx.xxx:/aws
+```
 
 
 次に、ルート証明書ファイルを取得します。
 
-keyフォルダに移動し、下記コマンドによりファイルを作成します。
+RaspberryPIにてkeyフォルダに移動し、下記コマンドによりファイルを作成します。
 
 ```
 curl https://www.symantec.com/content/en/us/enterprise/verisign/roots/VeriSign-Class%203-Public-Primary-Certification-Authority-G5.pem -o rootCA.pem
@@ -194,3 +197,13 @@ python aws_temp.py
 AWS IoTのMQTT Clientの画面から、今回送信した温度データを確認することができます。
 
 ![](img/publish/python/publish003.png)
+
+### 補足
+今回はAWS側にデータを送りましたが、AWS側でデータを受け取ることもできます。
+
+AWS SDKのサンプルコードの「subscribe」の箇所を参考にしてください。
+
+#####参考
+AWS_SDK samples/basicPubSub
+
+https://github.com/aws/aws-iot-device-sdk-python
