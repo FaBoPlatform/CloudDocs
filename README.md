@@ -1,5 +1,17 @@
-FaBo Cloud Docs.
+FaBo AWS IoT.
 =======
 
-FaBo AWSIoT連携に関するドキュメント。
+# 本ドキュメントについて
 
+FaBoとRaspberryPIを用いたAWS IoTの入門チュートリアルです。
+
+# 対象レベル
+
+プログラムを過去に書いたことがある
+
+# 使用言語
+
+Python
+
+
+Powered by [FaBo](http://www.fabo.io)
