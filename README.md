@@ -1,6 +1,8 @@
 FaBo AWS IoT.
 =======
 
+![](/img/title_aws_iot.png)
+
 # 本ドキュメントについて
 
 FaBoとRaspberryPIを用いたAWS IoTの入門チュートリアルです。
